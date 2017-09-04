@@ -1,0 +1,50 @@
+{
+  "name": "oakhope/oauth2-wechat",
+  "type": "library",
+  "description": "微信登录 Wechat login",
+  "authors": [
+    {
+      "name": "Benji Wang",
+      "email": "oak.hope@gmail.com"
+    }
+  ],
+  "keywords": [
+    "wechat",
+    "weixin",
+    "wechat login",
+    "weixin login",
+    "oauth2 wechat",
+    "oauth2 weixin",
+    "oauth",
+    "oauth2",
+    "client",
+    "authorization",
+    "authorisation"
+  ],
+  "homepage": "https://github.com/oakhope/oauth2-wechat",
+  "license": "MIT",
+  "require": {
+    "league/oauth2-client": "^2.2",
+    "symfony/var-dumper": "^3.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "~4.0",
+    "mockery/mockery": "~0.9",
+    "squizlabs/php_codesniffer": "~2.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Oakhope\\OAuth2\\Client\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Oakhope\\OAuth2\\Client\\Test\\": "tests/src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-master": "1.0.x-dev"
+    }
+  }
+}
