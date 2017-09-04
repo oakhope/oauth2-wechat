@@ -10,7 +10,6 @@ use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 class WebProvider extends AbstractProvider
 {

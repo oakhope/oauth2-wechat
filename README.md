@@ -19,62 +19,75 @@ composer require oakhope/oauth2-wechat
 
 ## Usage
 
-Usage is the same as The League's OAuth client, using `\Oakhope\OAuth2\Client\Provider\Wechat` as the provider.
+Usage is the same as The League's OAuth client, using `\Oakhope\OAuth2\Client\Provider\{WebProvider}` as the provider.
 
 ### Authorization Code Flow
 
 ```php
-$provider = new Oakhope\OAuth2\Client\Provider\Wechat([
-    'clientId'          => '{wechat-client-id}',
-    'clientSecret'      => '{wechat-client-secret}',
-    'redirectUri'       => 'https://example.com/callback-url'
-]);
+$provider = new \Oakhope\OAuth2\Client\Provider\WebProvider([
+        'appid' => '{wechat-client-id}',
+        'secret' => '{wechat-client-secret}',
+        'redirect_uri' => 'https://example.com/callback-url'
+    ]);
 
+// If we don't have an authorization code then get one
 if (!isset($_GET['code'])) {
 
-    // If we don't have an authorization code then get one
-    $authUrl = $provider->getAuthorizationUrl();
+    // Fetch the authorization URL from the provider; this returns the
+    // urlAuthorize option and generates and applies any necessary parameters
+    // (e.g. state).
+    $authorizationUrl = $provider->getAuthorizationUrl();
+
+    // Get the state generated for you and store it to the session.
     $_SESSION['oauth2state'] = $provider->getState();
-    header('Location: '.$authUrl);
+
+    // Redirect the user to the authorization URL.
+    header('Location: '.$authorizationUrl);
     exit;
 
 // Check given state against previously stored one to mitigate CSRF attack
-} elseif (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
+} elseif (empty($_GET['state']) || ($_GET['state'] !== rtrim($_SESSION['oauth2state'], '#wechat_redirect'))) {
 
     unset($_SESSION['oauth2state']);
     exit('Invalid state');
 
 } else {
 
-    // Try to get an access token (using the authorization code grant)
-    $token = $provider->getAccessToken('authorization_code', [
-        'code' => $_GET['code']
-    ]);
-
-    // Optional: Now you have a token you can look up a users profile data
     try {
 
-        // We got an access token, let's now get the user's details
-        $user = $provider->getResourceOwner($token);
+        // Try to get an access token using the authorization code grant.
+        $accessToken = $provider->getAccessToken(
+            'authorization_code',
+            [
+                'code' => $_GET['code'],
+            ]);
 
-        // Use these details to create a new profile
-        printf('Hello %s!', $user->getId());
+        // We have an access token, which we may use in authenticated
+        // requests against the service provider's API.
+        echo "token: ".$accessToken->getToken()."<br/>";
+        echo "refreshToken: ".$accessToken->getRefreshToken()."<br/>";
+        echo "Expires: ".$accessToken->getExpires()."<br/>";
+        echo ($accessToken->hasExpired() ? 'expired' : 'not expired')."<br/><br/>";
 
-    } catch (Exception $e) {
+        // Using the access token, we may look up details about the
+        // resource owner.
+        $resourceOwner = $provider->getResourceOwner($accessToken);
 
-        // Failed to get user details
-        exit('Oh dear...');
+        var_export($resourceOwner->toArray());
+        
+    } catch (\League\OAuth2\Client\Provider\Exception\IdentityProviderException $e) {
+
+        // Failed to get the access token or user details.
+        echo "error:";
+        exit($e->getMessage());
     }
-
-    // Use this to interact with an API on the users behalf
-    echo $token->getToken();
 }
 ```
 
 ## Testing
 
 ``` bash
-$ ./vendor/bin/phpunit
+$ ./vendor/bin/phpunit --colors tests
 ```
 
 ## Contributing
