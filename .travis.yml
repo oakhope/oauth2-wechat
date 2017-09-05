@@ -32,7 +32,7 @@ matrix:
         - php: hhvm-nightly
 
 before_script:
-  - travis_retry composer install --no-interaction --prefer-source
+  - travis_retry phpenv rehash
 
 script:
   - mkdir -p build/logs
