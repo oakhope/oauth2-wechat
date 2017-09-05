@@ -140,7 +140,7 @@ class WebProvider extends AbstractProvider
      */
     protected function getDefaultScopes()
     {
-       return ['snsapi_userinfo'];
+        return ['snsapi_userinfo'];
     }
 
     /**
@@ -176,5 +176,4 @@ class WebProvider extends AbstractProvider
     {
         return new WebResourceOwner($response);
     }
-
 }

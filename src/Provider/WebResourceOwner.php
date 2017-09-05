@@ -123,5 +123,4 @@ class WebResourceOwner implements ResourceOwnerInterface
     {
         return $this->response;
     }
-
 }
