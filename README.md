@@ -9,6 +9,12 @@
 
 This package provides Wechat OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
+- DONE:
+    > Website SDK
+
+- TODO: 
+    >  Mini Programs, Mobile App SDK 
+
 ## Installation
 
 To install, use composer:
@@ -81,6 +87,31 @@ if (!isset($_GET['code'])) {
         echo "error:";
         exit($e->getMessage());
     }
+}
+```
+
+
+### Refreshing a Token
+
+Once your application is authorized, you can refresh an expired token using a refresh token rather than going through the entire process of obtaining a brand new token. To do so, simply reuse this refresh token from your data store to request a refresh.
+
+_This example uses [Brent Shaffer's](https://github.com/bshaffer) demo OAuth 2.0 application named **Lock'd In**. See authorization code example above, for more details._
+
+```php
+$provider = new \Oakhope\OAuth2\Client\Provider\WebProvider([
+        'appid' => '{wechat-client-id}',
+        'secret' => '{wechat-client-secret}',
+        'redirect_uri' => 'https://example.com/callback-url'
+    ]);
+
+$existingAccessToken = getAccessTokenFromYourDataStore();
+
+if ($existingAccessToken->hasExpired()) {
+    $newAccessToken = $provider->getAccessToken('refresh_token', [
+        'refresh_token' => $existingAccessToken->getRefreshToken()
+    ]);
+
+    // Purge old access token and store new access token to your data store.
 }
 ```
 
