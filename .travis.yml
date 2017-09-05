@@ -35,8 +35,8 @@ before_script:
   - travis_retry phpenv rehash
 
 script:
-  - ./vendor/bin/phpunit --coverage-text tests
-  - ./vendor/bin/phpcs src --standard=psr2 -sp
+  - ./vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover tests
+  - ./vendor/bin/phpcs --standard=psr2 -sp src/
 
 after_success:
   - wget https://github.com/satooshi/php-coveralls/releases/download/v1.0.1/coveralls.phar
