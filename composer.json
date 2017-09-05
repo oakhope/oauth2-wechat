@@ -1,7 +1,7 @@
 {
   "name": "oakhope/oauth2-wechat",
   "type": "library",
-  "description": "微信登录 Wechat login",
+  "description": "微信登录认证授权 Wechat login authorization. This package provides Wechat OAuth 2.0 support for the PHP League's OAuth 2.0 Client",
   "authors": [
     {
       "name": "Benji Wang",
