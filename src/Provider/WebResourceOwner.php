@@ -59,7 +59,7 @@ class WebResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getProvincen()
+    public function getProvince()
     {
         return $this->response['province'] ?: null;
     }
