@@ -132,7 +132,7 @@ class WebProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($province, $user->getProvince());
         $this->assertEquals($city, $user->getCity());
         $this->assertEquals($country, $user->getCountry());
-        $this->assertEquals($headImagurl, $user->getHeadimgurl());
+        $this->assertEquals($headImagurl, $user->getHeadImgUrl());
         $this->assertEquals($privilege, $user->getPrivilege());
         $this->assertEquals($unionid, $user->getUnionId());
     }

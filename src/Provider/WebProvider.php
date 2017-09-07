@@ -148,7 +148,7 @@ class WebProvider extends AbstractProvider
      *
      * @throws IdentityProviderException
      * @param  ResponseInterface $response
-     * @param  array|string $data Parsed response data
+     * @param  array|string|\Psr\Http\Message\ResponseInterface $data Parsed response data
      * @return void
      */
     protected function checkResponse(ResponseInterface $response, $data)

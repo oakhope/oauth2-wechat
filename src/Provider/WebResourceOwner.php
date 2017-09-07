@@ -89,7 +89,7 @@ class WebResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getHeadimgurl()
+    public function getHeadImgUrl()
     {
         return $this->response['headimgurl'] ?: null;
     }
