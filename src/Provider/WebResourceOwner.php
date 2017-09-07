@@ -109,7 +109,7 @@ class WebResourceOwner implements ResourceOwnerInterface
      *
      * @return string|null
      */
-    public function getUnionid()
+    public function getUnionId()
     {
         return $this->response['unionid'] ?: null;
     }

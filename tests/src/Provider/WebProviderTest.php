@@ -134,7 +134,7 @@ class WebProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($country, $user->getCountry());
         $this->assertEquals($headImagurl, $user->getHeadimgurl());
         $this->assertEquals($privilege, $user->getPrivilege());
-        $this->assertEquals($unionid, $user->getUnionid());
+        $this->assertEquals($unionid, $user->getUnionId());
     }
 
     public function testUserDataFails()
