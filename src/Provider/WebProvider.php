@@ -140,7 +140,7 @@ class WebProvider extends AbstractProvider
      */
     protected function getDefaultScopes()
     {
-       return ['snsapi_userinfo'];
+        return ['snsapi_userinfo'];
     }
 
     /**
@@ -148,7 +148,7 @@ class WebProvider extends AbstractProvider
      *
      * @throws IdentityProviderException
      * @param  ResponseInterface $response
-     * @param  array|string $data Parsed response data
+     * @param  array|string|\Psr\Http\Message\ResponseInterface $data Parsed response data
      * @return void
      */
     protected function checkResponse(ResponseInterface $response, $data)
@@ -176,5 +176,4 @@ class WebProvider extends AbstractProvider
     {
         return new WebResourceOwner($response);
     }
-
 }
