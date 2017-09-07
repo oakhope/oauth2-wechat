@@ -5,7 +5,7 @@ $appid = $ini_array['appid'];
 $appsecret = $ini_array['secret'];
 $redirect_uri = $ini_array['redirect_uri'];
 
-require_once (__DIR__."/../../../vendor/autoload.php");
+require_once(__DIR__."/../../../vendor/autoload.php");
 session_start();
 
 $provider = new \Oakhope\OAuth2\Client\Provider\WebProvider(

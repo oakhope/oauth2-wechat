@@ -7,76 +7,70 @@ use League\OAuth2\Client\Grant\AbstractGrant;
 use League\OAuth2\Client\Provider\AbstractProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 use League\OAuth2\Client\Provider\ResourceOwnerInterface;
-use League\OAuth2\Client\Token\AccessToken;
 use League\OAuth2\Client\Tool\ArrayAccessorTrait;
+use League\OAuth2\Client\Tool\RequiredParameterTrait;
+use League\OAuth2\Client\Token\AccessToken;
+use Oakhope\OAuth2\Client\Grant\MiniProgram\AuthorizationCode;
 use Psr\Http\Message\ResponseInterface;
+use Symfony\Component\VarDumper\VarDumper;
 
-class WebProvider extends AbstractProvider
+class MiniProgramProvider extends AbstractProvider
 {
     use ArrayAccessorTrait;
+    use RequiredParameterTrait;
 
     protected $appid;
     protected $secret;
-    protected $redirect_uri;
+    protected $jscode;
+    protected $responseUserInfo;
+
+    /**
+     * Constructs an OAuth 2.0 service provider.
+     *
+     * @param array $options An array of options to set on this provider.
+     *     Options include `clientId`, `clientSecret`, `redirectUri`, and `state`.
+     *     Individual providers may introduce more options, as needed.
+     * @param array $collaborators An array of collaborators that may be used to
+     *     override this provider's default behavior. Collaborators include
+     *     `grantFactory`, `requestFactory`, and `httpClient`.
+     *     Individual providers may introduce more collaborators, as needed.
+     */
+    public function __construct(array $options = [], array $collaborators = [])
+    {
+        $this->checkRequiredParameters([
+            'appid',
+            'secret',
+            'js_code'
+        ], $options);
+
+        $options['access_token'] = 'js_code';
+
+        parent::__construct($options, $collaborators);
+    }
 
     /**
      * Returns the base URL for authorizing a client.
+     *
+     * Eg. https://oauth.service.com/authorize
      *
      * @return string
      */
     public function getBaseAuthorizationUrl()
     {
-        return 'https://open.weixin.qq.com/connect/qrconnect';
-    }
-
-    /**
-     * Returns authorization parameters based on provided options.
-     *
-     * @param  array $options
-     * @return array Authorization parameters
-     */
-    protected function getAuthorizationParameters(array $options)
-    {
-        $options += [
-            'appid' => $this->appid
-        ];
-
-        if (!isset($options['redirect_uri'])) {
-            $options['redirect_uri'] = $this->redirect_uri;
-        }
-
-        $options += [
-            'response_type'   => 'code'
-        ];
-
-        if (empty($options['scope'])) {
-            $options['scope'] = 'snsapi_login';
-        }
-
-        if (is_array($options['scope'])) {
-            $separator = $this->getScopeSeparator();
-            $options['scope'] = implode($separator, $options['scope']);
-        }
-
-        if (empty($options['state'])) {
-            $options['state'] = $this->getRandomState().'#wechat_redirect';
-        }
-
-        // Store the state as it may need to be accessed later on.
-        $this->state = $options['state'];
-
-        return $options;
+        throw new \LogicException('use wx.login(OBJECT) to get js_code');
     }
 
     /**
      * Returns the base URL for requesting an access token.
+     *
+     * Eg. https://oauth.service.com/token
      *
      * @param array $params
      * @return string
      */
     public function getBaseAccessTokenUrl(array $params)
     {
-        return 'https://api.weixin.qq.com/sns/oauth2/access_token';
+        return 'https://api.weixin.qq.com/sns/jscode2session';
     }
 
     /**
@@ -88,10 +82,12 @@ class WebProvider extends AbstractProvider
      */
     public function getAccessToken($grant, array $options = [])
     {
+        $grant = new AuthorizationCode();
         $grant = $this->verifyGrant($grant);
         $params = [
             'appid'     => $this->appid,
-            'secret' => $this->secret
+            'secret' => $this->secret,
+            'js_code' => $this->jscode
         ];
 
         $params   = $grant->prepareRequestParameters($params, $options);
@@ -115,7 +111,7 @@ class WebProvider extends AbstractProvider
      */
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
-        return new AccessToken($response);
+        return new \Oakhope\OAuth2\Client\Token\MiniProgram\AccessToken($response);
     }
 
     /**
@@ -126,8 +122,7 @@ class WebProvider extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        return 'https://api.weixin.qq.com/sns/userinfo?access_token='.
-            $token->getToken().'&openid='.$token->getValues()['openid'];
+        throw new \LogicException('use wx.getUserInfo(OBJECT) to get ResourceOwnerDetails');
     }
 
     /**
@@ -140,7 +135,7 @@ class WebProvider extends AbstractProvider
      */
     protected function getDefaultScopes()
     {
-        return ['snsapi_userinfo'];
+        return [];
     }
 
     /**
@@ -172,8 +167,33 @@ class WebProvider extends AbstractProvider
      * @param  AccessToken $token
      * @return ResourceOwnerInterface
      */
-    protected function createResourceOwner(array $response, AccessToken $token)
+    public function createResourceOwner(array $response, AccessToken $token)
     {
-        return new WebResourceOwner($response);
+        return new MiniProgramResourceOwner($response, $token, $this->appid);
+    }
+
+    /**
+     * Requests and returns the resource owner of given access token.
+     *
+     * @param  AccessToken $token
+     * @return ResourceOwnerInterface
+     */
+    public function getResourceOwner(AccessToken $token)
+    {
+        if (null == $this->responseUserInfo) {
+            throw new \InvalidArgumentException("setResponseUserInfo by wx.getUserInfo(OBJECT)'s response data first");
+        }
+
+        return $this->createResourceOwner($this->responseUserInfo, $token);
+    }
+
+    /**
+     * set by wx.getUserInfo(OBJECT)'s response data
+     *
+     * @param string $response
+     */
+    public function setResponseUserInfo($response)
+    {
+        $this->responseUserInfo = (array)\GuzzleHttp\json_decode($response);
     }
 }
