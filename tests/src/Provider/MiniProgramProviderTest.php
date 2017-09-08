@@ -7,7 +7,6 @@ use Mockery as m;
 use Oakhope\OAuth2\Client\Provider\MiniProgramProvider;
 use Oakhope\OAuth2\Client\Provider\MiniProgramResourceOwner;
 use Oakhope\OAuth2\Client\Token\MiniProgram\AccessToken;
-use Symfony\Component\VarDumper\VarDumper;
 
 class MiniProgramProviderTest extends \PHPUnit_Framework_TestCase
 {

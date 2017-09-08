@@ -12,7 +12,6 @@ use League\OAuth2\Client\Tool\RequiredParameterTrait;
 use League\OAuth2\Client\Token\AccessToken;
 use Oakhope\OAuth2\Client\Grant\MiniProgram\AuthorizationCode;
 use Psr\Http\Message\ResponseInterface;
-use Symfony\Component\VarDumper\VarDumper;
 
 class MiniProgramProvider extends AbstractProvider
 {
@@ -39,8 +38,7 @@ class MiniProgramProvider extends AbstractProvider
     {
         $this->checkRequiredParameters([
             'appid',
-            'secret',
-            'js_code'
+            'secret'
         ], $options);
 
         $options['access_token'] = 'js_code';
@@ -76,18 +74,19 @@ class MiniProgramProvider extends AbstractProvider
     /**
      * Requests an access token using a specified grant and option set.
      *
-     * @param  mixed $grant
+     * @param  string $jsCode
      * @param  array $options
      * @return AccessToken
      */
-    public function getAccessToken($grant, array $options = [])
+    public function getAccessToken($jsCode, array $options = [])
     {
+        $this->jscode = $jsCode;
         $grant = new AuthorizationCode();
         $grant = $this->verifyGrant($grant);
         $params = [
             'appid'     => $this->appid,
             'secret' => $this->secret,
-            'js_code' => $this->jscode
+            'js_code' => $jsCode
         ];
 
         $params   = $grant->prepareRequestParameters($params, $options);
