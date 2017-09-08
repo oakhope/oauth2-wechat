@@ -32,6 +32,8 @@ matrix:
         - php: hhvm-nightly
 
 before_script:
+  - travis_retry composer self-update
+  - travis_retry composer update --no-interaction --prefer-source --dev
   - travis_retry phpenv rehash
 
 script:

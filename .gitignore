@@ -3,3 +3,5 @@
 *.iml
 /build
 .DS_Store
+/vendor
+composer.lock
