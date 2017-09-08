@@ -36,10 +36,13 @@ class MiniProgramProvider extends AbstractProvider
      */
     public function __construct(array $options = [], array $collaborators = [])
     {
-        $this->checkRequiredParameters([
-            'appid',
-            'secret'
-        ], $options);
+        $this->checkRequiredParameters(
+            [
+                'appid',
+                'secret',
+            ],
+            $options
+        );
 
         $options['access_token'] = 'js_code';
 
@@ -84,16 +87,16 @@ class MiniProgramProvider extends AbstractProvider
         $grant = new AuthorizationCode();
         $grant = $this->verifyGrant($grant);
         $params = [
-            'appid'     => $this->appid,
+            'appid' => $this->appid,
             'secret' => $this->secret,
-            'js_code' => $jsCode
+            'js_code' => $jsCode,
         ];
 
-        $params   = $grant->prepareRequestParameters($params, $options);
-        $request  = $this->getAccessTokenRequest($params);
+        $params = $grant->prepareRequestParameters($params, $options);
+        $request = $this->getAccessTokenRequest($params);
         $response = $this->getParsedResponse($request);
         $prepared = $this->prepareAccessTokenResponse($response);
-        $token    = $this->createAccessToken($prepared, $grant);
+        $token = $this->createAccessToken($prepared, $grant);
 
         return $token;
     }
@@ -110,7 +113,9 @@ class MiniProgramProvider extends AbstractProvider
      */
     protected function createAccessToken(array $response, AbstractGrant $grant)
     {
-        return new \Oakhope\OAuth2\Client\Token\MiniProgram\AccessToken($response);
+        return new \Oakhope\OAuth2\Client\Token\MiniProgram\AccessToken(
+            $response
+        );
     }
 
     /**
@@ -121,7 +126,9 @@ class MiniProgramProvider extends AbstractProvider
      */
     public function getResourceOwnerDetailsUrl(AccessToken $token)
     {
-        throw new \LogicException('use wx.getUserInfo(OBJECT) to get ResourceOwnerDetails');
+        throw new \LogicException(
+            'use wx.getUserInfo(OBJECT) to get ResourceOwnerDetails'
+        );
     }
 
     /**
@@ -147,15 +154,12 @@ class MiniProgramProvider extends AbstractProvider
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        $errors = [
-            'errcode',
-            'errmsg',
-        ];
-        array_map(function ($error) use ($response, $data) {
-            if ($message = $this->getValueByKey($data, $error)) {
-                throw new IdentityProviderException($message, $response->getStatusCode(), $response);
-            }
-        }, $errors);
+        $errcode = $this->getValueByKey($data, 'errcode');
+        $errmsg = $this->getValueByKey($data, 'errmsg');
+
+        if ($errcode || $errmsg) {
+            throw new IdentityProviderException($errmsg, $errcode, $response);
+        };
     }
 
     /**
@@ -180,7 +184,9 @@ class MiniProgramProvider extends AbstractProvider
     public function getResourceOwner(AccessToken $token)
     {
         if (null == $this->responseUserInfo) {
-            throw new \InvalidArgumentException("setResponseUserInfo by wx.getUserInfo(OBJECT)'s response data first");
+            throw new \InvalidArgumentException(
+                "setResponseUserInfo by wx.getUserInfo(OBJECT)'s response data first"
+            );
         }
 
         return $this->createResourceOwner($this->responseUserInfo, $token);
