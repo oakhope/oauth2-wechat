@@ -153,15 +153,12 @@ class WebProvider extends AbstractProvider
      */
     protected function checkResponse(ResponseInterface $response, $data)
     {
-        $errors = [
-            'errcode',
-            'errmsg',
-        ];
-        array_map(function ($error) use ($response, $data) {
-            if ($message = $this->getValueByKey($data, $error)) {
-                throw new IdentityProviderException($message, $response->getStatusCode(), $response);
-            }
-        }, $errors);
+        $errcode = $this->getValueByKey($data, 'errcode');
+        $errmsg = $this->getValueByKey($data, 'errmsg');
+
+        if ($errcode || $errmsg) {
+            throw new IdentityProviderException($errmsg, $errcode, $response);
+        };
     }
 
     /**
