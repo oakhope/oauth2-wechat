@@ -4,7 +4,6 @@ use League\OAuth2\Client\Tool\QueryBuilderTrait;
 use Mockery as m;
 use Oakhope\OAuth2\Client\Provider\WebProvider;
 use Oakhope\OAuth2\Client\Provider\WebResourceOwner;
-use Symfony\Component\VarDumper\VarDumper;
 
 class WebProviderTest extends \PHPUnit_Framework_TestCase
 {
