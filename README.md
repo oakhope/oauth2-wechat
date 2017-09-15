@@ -10,10 +10,10 @@
 This package provides Wechat OAuth 2.0 support for the PHP League's [OAuth 2.0 Client](https://github.com/thephpleague/oauth2-client).
 
 - DONE:
-    > Website SDK
+    > Website SDK, Mini Programs
 
 - TODO: 
-    >  Mini Programs, Mobile App SDK 
+    > Mobile App SDK 
 
 ## Installation
 
