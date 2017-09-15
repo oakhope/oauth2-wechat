@@ -199,6 +199,6 @@ class MiniProgramProvider extends AbstractProvider
      */
     public function setResponseUserInfo($response)
     {
-        $this->responseUserInfo = (array)\GuzzleHttp\json_decode($response);
+        $this->responseUserInfo = $response;
     }
 }
