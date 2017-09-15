@@ -195,7 +195,7 @@ class MiniProgramProvider extends AbstractProvider
     /**
      * set by wx.getUserInfo(OBJECT)'s response data
      *
-     * @param string $response
+     * @param array $response
      */
     public function setResponseUserInfo($response)
     {
