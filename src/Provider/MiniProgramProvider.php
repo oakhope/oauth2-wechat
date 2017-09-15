@@ -195,10 +195,10 @@ class MiniProgramProvider extends AbstractProvider
     /**
      * set by wx.getUserInfo(OBJECT)'s response data
      *
-     * @param string $response
+     * @param array $response
      */
     public function setResponseUserInfo($response)
     {
-        $this->responseUserInfo = (array)\GuzzleHttp\json_decode($response);
+        $this->responseUserInfo = $response;
     }
 }

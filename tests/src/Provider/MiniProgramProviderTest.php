@@ -128,7 +128,7 @@ class MiniProgramProviderTest extends \PHPUnit_Framework_TestCase
 
         $token = $this->provider->getAccessToken('authorization_code', ['js_code' => 'mock_authorization_code']);
 
-        $this->provider->setResponseUserInfo($userResponse->getBody());
+        $this->provider->setResponseUserInfo((array)\GuzzleHttp\json_decode($userResponse->getBody()));
         /** @var MiniProgramResourceOwner $user */
         $user = $this->provider->getResourceOwner($token);
 
